@@ -1,0 +1,46 @@
+{
+  "name": "pokeranks",
+  "version": "1.0.0",
+  "description": "Ranking of Battle in Pokemon Global Link.",
+  "scripts": {
+    "start": "node --require dotenv/config server.js",
+    "dev": "nodemon",
+    "update": "node --require dotenv/config update.js",
+    "test": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elite-Four/PokeRanks.git"
+  },
+  "keywords": [
+    "pokemon",
+    "pgl"
+  ],
+  "author": "George Chung <Gerhut@GMail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Elite-Four/PokeRanks/issues"
+  },
+  "homepage": "https://github.com/Elite-Four/PokeRanks#readme",
+  "dependencies": {
+    "axios": "^0.15.3",
+    "co": "^4.6.0",
+    "debug": "^2.6.0",
+    "dotenv": "^4.0.0",
+    "jstransformer-stylus": "^1.3.0",
+    "koa": "^1.2.4",
+    "moment": "^2.17.1",
+    "pg": "^6.1.2",
+    "pg-hstore": "^2.3.2",
+    "pug": "^2.0.0-beta10",
+    "screenshot-stream": "^4.1.0",
+    "sequelize": "^3.30.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.14.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "nodemon": "^1.11.0"
+  }
+}
