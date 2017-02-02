@@ -31,7 +31,7 @@ app.use(function * (next) {
   const ranks = yield Rank.all({
     attributes: ['updated', 'pokemons'],
     order: [['updated', 'DESC']],
-    limit: 5
+    limit: 2
   })
   this.assert(ranks.length > 0, 404)
   this.state.ranks = ranks
