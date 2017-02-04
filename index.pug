@@ -4,15 +4,22 @@ html
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1')
     title PokeRanks
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.css')
     style
       :stylus(compress=true)
+        .alter
+          font-size 2.8rem
+          margin .5rem
+
         .sprite-wrapper
+          display inline-block
           position relative
           width 100%
           max-width 300px
           margin auto
           overflow hidden
+          vertical-align middle
 
           &::before
             content ''
@@ -27,16 +34,34 @@ html
           bottom -50%
           background-size 50% 50%
   body
-    table.centered
-      thead
-        tr
-          each rank in ranks
-            th= rank.updated.toLocaleDateString()
-      tbody
-        each index in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-          tr
-            each rank in ranks
-              - var id = rank.pokemons[index][0]
-              td
+    .section.red.lighten-1.white-text
+      h1.center-align
+        span PokeRanks
+      .center-align= ranks[0].updated.toLocaleDateString()
+    ul
+      each index in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        li.section
+          .row
+            .col.s12.center-align
+              - var id = ranks[0].pokemons[index][0]
+                div.alter
+                  if ranks[1]
+                    each pokemon, i in ranks[1].pokemons
+                      - var flag = true
+                      if ranks[0].pokemons[index][0] === pokemon[0]
+                        - flag = false
+                        if index > i
+                          span.fa.fa-arrow-up.red-text= index - i
+                        if index < i
+                          span.fa.fa-arrow-down.green-text= i - index
+                        if index === i
+                          span.fa.fa-minus
+                      if flag
+                        span.fa.fa-arrow-up.green-text NEW
+                  else
+                    span.fa.fa-minus
                 .sprite-wrapper
                   .sprite(style=`background-image: url(${sprite(id)})`)
+            .col.s6
+          if index < 9
+            .divider
