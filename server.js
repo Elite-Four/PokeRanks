@@ -3,6 +3,7 @@
 const koa = require('koa')
 const pug = require('pug')
 const screenshot = require('screenshot-stream')
+const moment = require('moment')
 const Rank = require('./Rank')
 
 const app = koa()
@@ -34,7 +35,7 @@ app.use(function * (next) {
     limit: 2
   })
   this.assert(ranks.length > 0, 404)
-  this.state.ranks = ranks
+  this.state.ranks = ranks.map(({pokemons, updated}) => ({pokemons, updated: moment(updated).format('YYYY / MM / DD')}))
   return yield next
 })
 
