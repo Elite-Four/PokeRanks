@@ -50,9 +50,9 @@ html
                     each pokemon, i in ranks[1].pokemons
                       if ranks[0].pokemons[index][0] === pokemon[0]
                         - flag = false
-                        if index > i
-                          span.fa.fa-arrow-up.red-text= index - i
                         if index < i
+                          span.fa.fa-arrow-up.red-text= index - i
+                        if index > i
                           span.fa.fa-arrow-down.green-text= i - index
                         if index === i
                           span.fa.fa-minus
