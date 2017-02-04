@@ -46,8 +46,8 @@ html
               - var id = ranks[0].pokemons[index][0]
                 div.alter
                   if ranks[1]
+                    - var flag = true
                     each pokemon, i in ranks[1].pokemons
-                      - var flag = true
                       if ranks[0].pokemons[index][0] === pokemon[0]
                         - flag = false
                         if index > i
