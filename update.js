@@ -132,7 +132,10 @@ co(function * () {
   const pokemons = Array.from(pokemonCounts)
     .sort((pokemonCountA, pokemonCountB) => pokemonCountB[1] - pokemonCountA[1])
 
-  return yield Rank.upsert({ updated, pokemons })
+  return yield Rank.findOrCreate({
+    where: { updated },
+    defaults: { pokemons }
+  })
 }).catch(error => {
   console.error(error)
   process.exit(1)
