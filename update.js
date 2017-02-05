@@ -117,7 +117,9 @@ co(function * () {
         const formIndex = MEGA_FORMS[`${itemId}-${nationalId}`] == null
           ? pokemonData.formNo
           : MEGA_FORMS[`${itemId}-${nationalId}`]
-        const pokemon = `${nationalId}-${formIndex}`
+        const pokemon = formIndex === '0'
+          ? `${nationalId}`
+          : `${nationalId}-${formIndex}`
 
         let pokemonCount = pokemonCounts.get(pokemon) || 0
         pokemonCount += +teamCount

@@ -6,45 +6,18 @@ html
     title PokeRanks
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.css')
-    style
-      :stylus(compress=true)
-        .alter
-          font-size 2.8rem
-          margin .5rem
-
-        .sprite-wrapper
-          display inline-block
-          position relative
-          width 100%
-          max-width 300px
-          margin auto
-          overflow hidden
-          vertical-align middle
-
-          &::before
-            content ''
-            display block
-            padding-top 100%
-
-        .sprite
-          position absolute
-          left -50%
-          right -50%
-          top -50%
-          bottom -50%
-          background-size 50% 50%
   body
     .section.red.lighten-1.white-text
       h1.center-align
         span PokeRanks
-      .center-align= ranks[0].updated
+      .center-align= moment(ranks[0].updated).format('YYYY / MM / DD')
     ul
       each index in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         li.section
           .row
             .col.s12.center-align
               - var id = ranks[0].pokemons[index][0]
-                div.alter
+                h2
                   if ranks[1]
                     - var flag = true
                     each pokemon, i in ranks[1].pokemons
@@ -60,8 +33,7 @@ html
                       span.fa.fa-arrow-up.green-text NEW
                   else
                     span.fa.fa-minus
-                .sprite-wrapper
-                  .sprite(style=`background-image: url(${sprite(id)})`)
+                img.responsive-img(src=`https://elite-four.github.io/pokemon-sprites/${id}.png`)
             .col.s6
           if index < 9
             .divider
