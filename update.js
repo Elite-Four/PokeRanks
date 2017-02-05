@@ -118,7 +118,6 @@ co(function * () {
           ? pokemonData.formNo
           : MEGA_FORMS[`${itemId}-${nationalId}`]
         const pokemon = `${nationalId}-${formIndex}`
-        debug('Parsed Pokemon %s', pokemon)
 
         let pokemonCount = pokemonCounts.get(pokemon) || 0
         pokemonCount += +teamCount
