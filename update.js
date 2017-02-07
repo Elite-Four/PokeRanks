@@ -106,6 +106,12 @@ co(function * () {
   )
   debug('Fetched %d teams, updated at %s', teams.length, updated)
 
+  const count = yield Rank.count({ where: { updated } })
+  if (count > 0) {
+    debug(`Rank on %s exists, skip fetching details`, updated)
+    return
+  }
+
   const pokemonCounts = new Map()
   for (let team of teams) {
     try {
