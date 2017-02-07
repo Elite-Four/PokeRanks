@@ -19,8 +19,17 @@ const battleTeam = axios.create({
   transformRequest: data => querystring.stringify(data)
 })
 battleTeam.interceptors.response.use(response => {
+  if (typeof response.data !== 'object') {
+    throw Object.assign(
+      Error(`Not a JSON response: ${response.data}`),
+      { response }
+    )
+  }
   if (response.data.status_code !== '0000') {
-    throw new Error(`API Error ${response.data.status_code}`)
+    throw Object.assign(
+      Error(`API Error: ${response.data.status_code}`),
+      { response }
+    )
   }
   return response
 })
