@@ -12,12 +12,15 @@ html
         span PokeRanks
       .center-align= moment(ranks[0].updated).format('YYYY / MM / DD')
     ul
-      each index in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - var index = 0
+      while index < 20
         li.section
           .row
             .col.s12.center-align
               - var id = ranks[0].pokemons[index][0]
                 h2
+                  span= "No." + (index + 1)
+                  span &nbsp;
                   if ranks[1]
                     - var flag = true
                     each pokemon, i in ranks[1].pokemons
@@ -28,12 +31,13 @@ html
                         if index > i
                           span.fa.fa-arrow-down.green-text= index - i
                         if index === i
-                          span.fa.fa-minus
+                          span.fa.fa-minus.blue-text
                     if flag
                       span.fa.fa-arrow-up.green-text NEW
                   else
-                    span.fa.fa-minus
+                    span.fa.fa-minus.blue-text
                 img.responsive-img(src=`https://elite-four.github.io/pokemon-sprites/${id}.png`)
             .col.s6
           if index < 9
             .divider
+          - index++
