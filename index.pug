@@ -13,7 +13,8 @@ html
       .center-align= moment(ranks[0].updated).format('YYYY / MM / DD')
     ul
       - var index = 0
-      while index < 20
+      - var limit = 20
+      while index < limit
         li.section
           .row
             .col.s12.center-align
@@ -38,6 +39,6 @@ html
                     span.fa.fa-minus.blue-text
                 img.responsive-img(src=`https://elite-four.github.io/pokemon-sprites/${id}.png`)
             .col.s6
-          if index < 9
+          if index < limit - 1
             .divider
-          - index++
+        - index++
