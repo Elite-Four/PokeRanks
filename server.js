@@ -1,58 +1,57 @@
 #! /usr/bin/env node
 
 const koa = require('koa')
-const pug = require('pug')
-const screenshot = require('screenshot-stream')
-const moment = require('moment')
 const Rank = require('./Rank')
+const util = require('./util')
 
 const app = koa()
 
-app.use(function * (next) {
-  let type = {
-    '/index.json': 'json',
-    '/': 'html',
-    '/index.html': 'html',
-    '/index.png': 'png'
-  }[this.path]
-  this.assert(type, 404)
-  this.response.type = type
+.use(function * (next) {
+  this.assert(this.path === '/', 404)
+  this.assert(this.method === 'GET', 405)
   return yield next
 })
 
-app.use(function * (next) {
-  const ranks = yield Rank.all({
-    attributes: ['updated', 'pokemons'],
-    order: [['updated', 'DESC']],
-    limit: 2
-  })
-  this.assert(ranks.length > 0, 404)
-  this.state.ranks = ranks
+.use(function * (next) {
+  this.type = this.accepts('json', 'html', 'png')
+  this.assert(this.type, 406)
   return yield next
 })
 
-app.use(function * (next) {
+.use(function * (next) {
+  this.state = yield util.load(2)
+  this.assert(this.state.length, 404)
+  return yield next
+})
+
+.use(function * (next) {
   if (this.response.is('json')) {
-    this.body = this.state.ranks
+    this.body = this.state
+  } else {
+    yield next
   }
-  return yield next
 })
 
-app.use(function * (next) {
-  this.state.moment = moment
-  this.state.body = pug.renderFile('index.pug', this.state)
+.use(function * (next) {
+  this.state = util.render(this.state)
   if (this.response.is('html')) {
-    this.body = this.state.body
+    this.body = this.state
+  } else {
+    yield next
   }
-  return yield next
 })
 
-app.use(function * (next) {
+.use(function * (next) {
+  this.state = util.screenshot(this.state)
   if (this.response.is('png')) {
-    const url = 'data:text/html,' + encodeURIComponent(this.state.body)
-    this.body = screenshot(url, '320x480')
+    this.body = this.state
+  } else {
+    yield next
   }
-  return yield next
+})
+
+.use(function * () {
+  this.throw(400)
 })
 
 Rank.sync().then(() => app.listen(process.env.PORT))

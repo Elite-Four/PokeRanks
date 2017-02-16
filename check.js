@@ -7,6 +7,7 @@ const moment = require('moment')
 const querystring = require('querystring')
 
 const Rank = require('./Rank')
+const send = require('./send')
 
 const battleTeam = axios.create({
   baseURL: 'https://3ds.pokemon-gl.com/frontendApi/battleTeam',
@@ -84,7 +85,7 @@ const MEGA_FORMS = { // 'itemId-nationalId': 'formId'
   '770-15': '1'   // Mega Beedrill
 }
 
-co(function * () {
+const check = module.exports = co.wrap(function * () {
   yield Rank.sync()
 
   debug('Fetching trending teams...')
@@ -107,52 +108,57 @@ co(function * () {
   debug('Fetched %d teams, updated at %s', teams.length, updated)
 
   const count = yield Rank.count({ where: { updated } })
-  if (count > 0) {
-    debug(`Rank on %s exists, skip fetching details`, updated)
-    return
-  }
+  if (count === 0) {
+    const pokemonCounts = new Map()
+    for (let team of teams) {
+      try {
+        debug('Fetching team %s', team)
+        const { data } = yield battleTeam.post('/getBattleTeamDetail', {
+          languageId: 2, // English
+          battleTeamCd: team
+        })
 
-  const pokemonCounts = new Map()
-  for (let team of teams) {
-    try {
-      debug('Fetching team %s', team)
-      const { data } = yield battleTeam.post('/getBattleTeamDetail', {
-        languageId: 2, // English
-        battleTeamCd: team
-      })
+        const teamCount = Number(data.battleTeam.useCount)
+        debug('Team %s used %d times', team, teamCount)
 
-      const teamCount = Number(data.battleTeam.useCount)
-      debug('Team %s used %d times', team, teamCount)
+        for (let pokemonData of data.pokemonList) {
+          const {
+              monsno: nationalId,
+              itemId
+            } = pokemonData
+          const formIndex = MEGA_FORMS[`${itemId}-${nationalId}`] == null
+              ? pokemonData.formNo
+              : MEGA_FORMS[`${itemId}-${nationalId}`]
+          const pokemon = formIndex === '0'
+              ? `${nationalId}`
+              : `${nationalId}-${formIndex}`
 
-      for (let pokemonData of data.pokemonList) {
-        const {
-          monsno: nationalId,
-          itemId
-        } = pokemonData
-        const formIndex = MEGA_FORMS[`${itemId}-${nationalId}`] == null
-          ? pokemonData.formNo
-          : MEGA_FORMS[`${itemId}-${nationalId}`]
-        const pokemon = formIndex === '0'
-          ? `${nationalId}`
-          : `${nationalId}-${formIndex}`
-
-        let pokemonCount = pokemonCounts.get(pokemon) || 0
-        pokemonCount += +teamCount
-        pokemonCounts.set(pokemon, pokemonCount)
+          let pokemonCount = pokemonCounts.get(pokemon) || 0
+          pokemonCount += +teamCount
+          pokemonCounts.set(pokemon, pokemonCount)
+        }
+      } catch (e) {
+        debug('Error', e)
       }
-    } catch (e) {
-      debug('Error', e)
     }
+
+    const pokemons = Array.from(pokemonCounts)
+        .sort((pokemonCountA, pokemonCountB) => pokemonCountB[1] - pokemonCountA[1])
+
+    yield Rank.findOrCreate({
+      where: { updated },
+      defaults: { pokemons }
+    })
+
+    yield send()
+  } else {
+    debug(`Rank on %s exists, skip fetching details`, updated)
   }
-
-  const pokemons = Array.from(pokemonCounts)
-    .sort((pokemonCountA, pokemonCountB) => pokemonCountB[1] - pokemonCountA[1])
-
-  return yield Rank.findOrCreate({
-    where: { updated },
-    defaults: { pokemons }
-  })
-}).catch(error => {
-  console.error(error)
-  process.exit(1)
 })
+
+if (require.main === module) {
+  check().catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
+}

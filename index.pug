@@ -10,7 +10,7 @@ html
     .section.red.lighten-1.white-text
       h1.center-align
         span PokeRanks
-      .center-align= moment(ranks[0].updated).format('YYYY / MM / DD')
+      .center-align= moment(data[0].updated).format('YYYY / MM / DD')
     ul
       - var index = 0
       - var limit = 20
@@ -18,14 +18,14 @@ html
         li.section
           .row
             .col.s12.center-align
-              - var id = ranks[0].pokemons[index][0]
+              - var id = data[0].pokemons[index][0]
                 h2
                   span= "No." + (index + 1)
                   span &nbsp;
-                  if ranks[1]
+                  if data[1]
                     - var flag = true
-                    each pokemon, i in ranks[1].pokemons
-                      if ranks[0].pokemons[index][0] === pokemon[0]
+                    each pokemon, i in data[1].pokemons
+                      if data[0].pokemons[index][0] === pokemon[0]
                         - flag = false
                         if index < i
                           span.fa.fa-arrow-up.red-text= i - index
