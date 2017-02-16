@@ -3,14 +3,13 @@
 const co = require('co')
 const debug = require('debug')('PokeRanks')
 const nodemailer = require('nodemailer')
-const os = require('os')
 
 const util = require('./util')
 
 const transporter = nodemailer.createTransport({
   direct: true
 }, {
-  from: `PokeRanks <pokeranks@${os.hostname()}>`,
+  from: process.env.MAIL_FROM,
   to: process.env.MAIL_TO,
   subject: process.env.MAIL_SUBJECT
 })
