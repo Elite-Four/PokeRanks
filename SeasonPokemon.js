@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const sequelize = new Sequelize(process.env.DATABASE_URL)
 
-const Rank = sequelize.define('rank', {
+const SeasonPokemon = sequelize.define('SeasonPokemon', {
   updated: {
     type: Sequelize.DATEONLY,
     primaryKey: true
@@ -12,4 +12,4 @@ const Rank = sequelize.define('rank', {
   }
 })
 
-module.exports = Rank
+module.exports = SeasonPokemon

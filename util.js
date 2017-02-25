@@ -1,9 +1,9 @@
 const moment = require('moment')
 const pug = require('pug')
 const screenshotStream = require('screenshot-stream')
-const Rank = require('./Rank')
+const SeasonPokemon = require('./SeasonPokemon')
 
-exports.load = count => Rank.all({
+exports.load = count => SeasonPokemon.all({
   attributes: ['updated', 'pokemons'],
   order: [['updated', 'DESC']],
   limit: count

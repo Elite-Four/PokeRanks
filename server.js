@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 const koa = require('koa')
-const Rank = require('./Rank')
+const SeasonPokemon = require('./SeasonPokemon')
 const util = require('./util')
 
 const app = koa()
@@ -54,4 +54,4 @@ const app = koa()
   this.throw(400)
 })
 
-Rank.sync().then(() => app.listen(process.env.PORT))
+SeasonPokemon.sync().then(() => app.listen(process.env.PORT))

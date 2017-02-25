@@ -8,37 +8,28 @@ html
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.css')
   body
     .section.red.lighten-1.white-text
-      h1.center-align
-        span PokeRanks
-      .center-align= moment(data[0].updated).format('YYYY / MM / DD')
+      .center-align=moment(data[0].updated).format('YYYY / MM / DD')
     ul
-      - var index = 0
-      - var limit = 20
-      while index < limit
+      each pokemon, index in data[0].pokemons
         li.section
           .row
             .col.s12.center-align
-              - var id = data[0].pokemons[index][0]
-                h2
-                  span= "No." + (index + 1)
-                  span &nbsp;
-                  if data[1]
-                    - var flag = true
-                    each pokemon, i in data[1].pokemons
-                      if data[0].pokemons[index][0] === pokemon[0]
-                        - flag = false
-                        if index < i
-                          span.fa.fa-arrow-up.red-text= i - index
-                        if index > i
-                          span.fa.fa-arrow-down.green-text= index - i
-                        if index === i
-                          span.fa.fa-minus.blue-text
-                    if flag
-                      span.fa.fa-arrow-up.green-text NEW
-                  else
-                    span.fa.fa-minus.blue-text
-                img.responsive-img(src=`https://elite-four.github.io/pokemon-sprites/${id}.png`)
-            .col.s6
-          if index < limit - 1
-            .divider
-        - index++
+              h2
+                span=`No.${index + 1}`
+                span &nbsp;
+                if data[1]
+                  - var found = false
+                  each pokemon1, index1 in data[1].pokemons
+                    if pokemon === pokemon1
+                      - found = true
+                      if index < index1
+                        span.fa.fa-arrow-up.red-text= index1 - index
+                      else if index > index1
+                        span.fa.fa-arrow-down.green-text= index - index1
+                      else
+                        span.fa.fa-minus.blue-text
+                  unless found
+                    span.fa.fa-arrow-up.green-text NEW
+                else
+                  span.fa.fa-minus.blue-text
+              img.responsive-img(src=`https://elite-four.github.io/pokemon-sprites/${pokemon}.png`)
